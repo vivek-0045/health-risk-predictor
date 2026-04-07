@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Result</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: white;
+    text-align: center;
+    font-family: 'Segoe UI';
+}
+
+.container {
+    width: 70%;
+    margin: 30px auto;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px auto;
+    width: 60%;
+}
+
+/* BUTTON */
+.btn {
+    padding: 12px 25px;
+    background: #00c6ff;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    border: none;
+}
+
+/* YES/NO */
+.choice {
+    margin-top: 15px;
+    display: none;
+}
+
+.choice button {
+    margin: 5px;
+}
+
+/* EMAIL BOX */
+.email-box {
+    margin-top: 15px;
+    display: none;
+}
+
+input {
+    padding: 10px;
+    width: 250px;
+    border-radius: 6px;
+    border: none;
+}
+
+/* ROCKET */
+.rocket {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    font-size: 200px;
+    opacity: 0;
+}
+
+/* ANIMATION */
+.launch {
+    animation: fly 0.8s linear forwards;
+}
+
+@keyframes fly {
+    0% {
+        transform: translate(-50%, 0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+
+    30% {
+        transform: translate(-50%, -200px) scale(1.2) rotate(-10deg);
+    }
+
+    60% {
+        transform: translate(200px, -400px) scale(1.4) rotate(-25deg);
+    }
+
+    100% {
+        transform: translate(500px, -800px) scale(1.6) rotate(-35deg);
+        opacity: 0;
+    }
+}
+
+
+/* SUCCESS */
+.success {
+    display: none;
+    color: #00ffcc;
+    margin-top: 15px;
+}
+</style>
+
+<script>
+function showChoice(){
+    document.getElementById("choice").style.display = "block";
+}
+
+function selectYes(){
+    document.getElementById("emailBox").style.display = "block";
+}
+
+function selectNo(){
+    document.getElementById("choice").style.display = "none";
+}
+
+function sendMail(){
+
+    let email = document.getElementById("email").value;
+
+    if(email === ""){
+        alert("Please enter email");
+        return;
+    }
+
+    let rocket = document.getElementById("rocket");
+
+    rocket.style.opacity = 1;
+    rocket.classList.add("launch");
+
+    fetch("/send_mail", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email: email})
+    });
+
+    setTimeout(()=>{
+        document.getElementById("success").style.display = "block";
+    },1500);
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧠 Prediction Result</h1>
+
+<div class="card">
+<p><b>Probability:</b> {{ probability }}</p>
+<p><b>Risk Level:</b> {{ risk_level }}</p>
+</div>
+
+<div class="card">
+<h3>Risk Types</h3>
+<ul>
+{% for r in risk_type %}
+<li>{{ r }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="card">
+<h3>📊 Explainability</h3>
+<img src="{{ url_for('static', filename='waterfall.png') }}" width="60%"><br>
+<img src="{{ url_for('static', filename='force.png') }}" width="60%">
+</div>
+
+<br>
+
+<!-- MAIN BUTTON -->
+<button class="btn" onclick="showChoice()">
+🚀 Transfer Report via Mail
+<span id="rocket" class="rocket">🚀</span>
+</button>
+
+<!-- YES / NO -->
+<div id="choice" class="choice">
+    <p>Send report via mail?</p>
+    <button onclick="selectYes()">Yes</button>
+    <button onclick="selectNo()">No</button>
+</div>
+
+<!-- EMAIL INPUT -->
+<div id="emailBox" class="email-box">
+    <input type="email" id="email" placeholder="Enter Email">
+    <br><br>
+    <button onclick="sendMail()">Send</button>
+</div>
+
+<p id="success" class="success">✅ Email Sent Successfully</p>
+
+<br><br>
+<a href="/" style="color:white;">🔙 Back</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Health Risk Prediction</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CENTER CONTAINER */
+.container {
+    text-align: center;
+    animation: fadeIn 1.2s ease;
+}
+
+/* BUTTON */
+button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    background: #00c6ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0072ff;
+    transform: scale(1.05);
+}
+
+/* FORM BOX */
+.form-box {
+    width: 400px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.1);
+    padding: 25px;
+    border-radius: 12px;
+    animation: slideUp 0.6s ease;
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+/* HIDE */
+.hidden {
+    display: none;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes slideUp {
+    from {transform: translateY(40px); opacity:0;}
+    to {transform: translateY(0); opacity:1;}
+}
+</style>
+
+<script>
+function showMode() {
+    document.getElementById("welcome").style.display = "none";
+    document.getElementById("mode").classList.remove("hidden");
+}
+
+function selectMode(type) {
+    document.getElementById("mode").style.display = "none";
+
+    if (type === 'manual') {
+        document.getElementById("manualForm").classList.remove("hidden");
+    } else {
+        document.getElementById("dbForm").classList.remove("hidden");
+    }
+}
+</script>
+
+</head>
+
+<body>
+
+<!-- WELCOME SCREEN -->
+<div id="welcome" class="container">
+    <h1>🩺 Welcome to Health Risk Prediction</h1>
+    <p>AI-powered system to predict and explain health risks instantly</p>
+    <br>
+    <button onclick="showMode()">🚀 Predict Risk</button>
+</div>
+
+<!-- MODE SELECTION -->
+<div id="mode" class="container hidden">
+    <h2>Select Mode</h2>
+    <br>
+    <button onclick="selectMode('manual')">Manual Input</button>
+    <button onclick="selectMode('db')">Fetch from Database</button>
+</div>
+
+<!-- MANUAL FORM -->
+<div id="manualForm" class="form-box hidden">
+<form action="/predict" method="post">
+
+<input type="hidden" name="mode" value="manual">
+
+<input type="number" name="age" placeholder="Age" required>
+
+<select name="gender">
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<input type="number" name="systolic_bp" placeholder="Systolic BP">
+<input type="number" name="diastolic_bp" placeholder="Diastolic BP">
+<input type="number" name="cholesterol" placeholder="Cholesterol">
+
+<!-- ✅ GLUCOSE FIX -->
+<select name="glucose_level">
+<option value="0">0 (Normal)</option>
+<option value="1">1 (High)</option>
+</select>
+
+<input type="number" name="heart_rate" placeholder="Heart Rate">
+
+<br>
+<button type="submit">🚀 Predict</button>
+
+</form>
+</div>
+
+<!-- DATABASE FORM -->
+<div id="dbForm" class="form-box hidden">
+<form action="/predict" method="post">
+
+<input type="hidden" name="mode" value="db">
+
+<input type="text" name="patient_id" placeholder="Enter Patient ID" required>
+
+<br>
+<button type="submit">🚀 Predict</button>
+
+</form>
+</div>
+
+</body>
+</html>
